@@ -9,20 +9,24 @@ from rest_framework import permissions
 class NewsView(APIView):
     permission_classes = [permissions.AllowAny]
 
+    def get_object(self,):
+        try:
+            news = NewsModel.objects.all()
+            return news
+        except:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+
     def get(self, request):
-        queryset = NewsModel.objects.all()
-        serializer = NewsSerializer(queryset, many=True)
+        news = self.get_object()
+        serializer = NewsSerializer(news, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
     def post(self, request):
-        data = request.data
-        title = data['title']
-        image = data['image']
-        shortDescription = data['shortDescription']
-        description = data['description']
-        category = data['category']
-        dateOfRelease = data['dateOfRelease']
-        news = NewsModel(title=title, image=image, shortDescription=shortDescription, description=description, category=category, dateOfRelease=dateOfRelease )
-        news.save()
-        return Response(status=status.HTTP_200_OK)
+        serializer = NewsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(None, status=status.HTTP_400_BAD_REQUEST)
     
