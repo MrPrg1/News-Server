@@ -8,12 +8,14 @@ from rest_framework import generics
 from rest_framework import mixins
 from rest_framework import viewsets
 from django.contrib.auth import get_user_model
+from rest_framework.pagination import PageNumberPagination
 
 User = get_user_model()
 
 class NewsListView(viewsets.ModelViewSet):
     queryset = NewsModel.objects.all()
     serializer_class = NewsSerializer
+    pagination_class = PageNumberPagination
 
 
 
