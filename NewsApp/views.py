@@ -4,29 +4,31 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import NewsModel, NewsSerializer
 from rest_framework import permissions
+from rest_framework import generics
+from rest_framework import mixins
 
 
-class NewsView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def get_object(self,):
-        try:
-            news = NewsModel.objects.all()
-            return news
-        except:
-            return Response(None, status=status.HTTP_404_NOT_FOUND)
+class NewsListView(mixins.ListModelMixin ,mixins.CreateModelMixin ,generics.GenericAPIView):
+    queryset = NewsModel.objects.all()
+    serializer_class = NewsSerializer
 
     def get(self, request):
-        news = self.get_object()
-        serializer = NewsSerializer(news, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.list(request)
+        
+    def post(self, request):
+        return self.create(request)
     
 
-    def post(self, request):
-        serializer = NewsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(None, status=status.HTTP_400_BAD_REQUEST)
+class NewsUpdateView(mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = NewsModel.objects.all()
+    serializer_class = NewsSerializer
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return  self.update(request, pk)
+    
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
     
