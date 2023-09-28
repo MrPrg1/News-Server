@@ -6,16 +6,10 @@ from .models import NewsModel, NewsSerializer
 from rest_framework import permissions
 from rest_framework import generics
 from rest_framework import mixins
+from rest_framework import viewsets
 
-
-class NewsListView(generics.ListCreateAPIView):
+class NewsListView(viewsets.ModelViewSet):
     queryset = NewsModel.objects.all()
     serializer_class = NewsSerializer
 
-    
 
-class NewsUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = NewsModel.objects.all()
-    serializer_class = NewsSerializer
-
-    
