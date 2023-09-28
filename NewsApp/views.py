@@ -8,27 +8,14 @@ from rest_framework import generics
 from rest_framework import mixins
 
 
-class NewsListView(mixins.ListModelMixin ,mixins.CreateModelMixin ,generics.GenericAPIView):
+class NewsListView(generics.ListCreateAPIView):
     queryset = NewsModel.objects.all()
     serializer_class = NewsSerializer
 
-    def get(self, request):
-        return self.list(request)
-        
-    def post(self, request):
-        return self.create(request)
     
 
-class NewsUpdateView(mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+class NewsUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = NewsModel.objects.all()
     serializer_class = NewsSerializer
 
-    def get(self, request, pk):
-        return self.retrieve(request, pk)
-
-    def put(self, request, pk):
-        return  self.update(request, pk)
-    
-    def delete(self, request, pk):
-        return self.destroy(request, pk)
     
